@@ -1,0 +1,73 @@
+name: Psych Engine 0.1.1 Builds
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (${{ matrix.platform }})
+    permissions: write-all
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - platform: Windows
+            os: windows-latest
+            build_cmd: haxelib run lime build windows
+            setup_libs: setup/install-haxelibs.bat
+            extra_libs:
+            configure_android:
+            artifact_name: Windows Build
+            artifact_path: export/release/windows/bin
+
+          - platform: Windows x32
+            os: windows-latest
+            build_cmd: haxelib run lime build windows -32 -D 32bits -D HXCPP_M32
+            setup_libs: setup/install-haxelibs.bat
+            extra_libs:
+            configure_android:
+            artifact_name: Windows Build (32 Bits)
+            artifact_path: export/32bit/windows/bin
+
+          - platform: Linux
+            os: ubuntu-latest
+            build_cmd: haxelib run lime build linux
+            setup_libs: sh ./setup/install-haxelibs.sh
+            extra_libs: |
+              sudo apt-get install libvlc-dev
+              sudo apt-get install libvlccore-dev
+            configure_android:
+            artifact_name: Linux Build
+            artifact_path: export/release/linux/bin
+            
+    steps:
+      - name: Pull the New Commit
+        uses: actions/checkout@v4
+
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: 4.3.7
+
+      - name: Install Extra Libraries
+        if: ${{ matrix.extra_libs }}
+        run: ${{ matrix.extra_libs }}
+
+      - name: Install Main Libraries
+        run: ${{ matrix.setup_libs }}
+
+      - name: Configure Android
+        if: ${{ matrix.configure_android }}
+        run: ${{ matrix.configure_android }}
+
+      - name: Build for ${{ matrix.platform }}
+        run: ${{ matrix.build_cmd }}
+
+      - name: Upload Game
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_path }}
+          if-no-files-found: error
