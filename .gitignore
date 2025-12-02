@@ -1,0 +1,4 @@
+.haxelib/*
+export/*
+.vscode/*
+APIStuff.hx
