@@ -9,7 +9,7 @@ echo Installing dependencies...
 
 haxelib install hxcpp 4.3.2
 
-haxelib install lime 7.9.0
+haxelib git lime https://github.com/AlejoGDOfficial/Lime
 
 haxelib install openfl 9.1.0 --skip-dependencies
 
