@@ -63,7 +63,7 @@ class ColorSwapShader extends FlxShader {
 
 			color = vec4(color.rgb / color.a, color.a);
 
-			mat4 colorMultiplier = mat4(0);
+			mat4 colorMultiplier = mat4(0.0); // Cambiado a 0.0
 			colorMultiplier[0][0] = openfl_ColorMultiplierv.x;
 			colorMultiplier[1][1] = openfl_ColorMultiplierv.y;
 			colorMultiplier[2][2] = openfl_ColorMultiplierv.z;
@@ -119,8 +119,11 @@ class ColorSwapShader extends FlxShader {
 			// [0] is the hue???
 			swagColor[0] += uTime[0];
 			swagColor[1] += uTime[1];
-			if(swagColor[1] < 0) swagColor[1] = 0;
-			else if(swagColor[1] > 1) swagColor[1] = 1;
+			
+			// CORRECCIÓN: Cambiar enteros a valores float
+			if(swagColor[1] < 0.0) swagColor[1] = 0.0;
+			else if(swagColor[1] > 1.0) swagColor[1] = 1.0;
+			
 			swagColor[2] *= 1.0 + uTime[2];
 
 			color = vec4(hsv2rgb(vec3(swagColor[0], swagColor[1], swagColor[2])), swagColor[3]);
@@ -128,16 +131,16 @@ class ColorSwapShader extends FlxShader {
 			if (awesomeOutline)
 			{
 				 // Outline bullshit?
-				vec2 size = vec2(3, 3);
+				vec2 size = vec2(3.0, 3.0); // Cambiado a 3.0
 
 				if (color.a <= 0.5) {
 					float w = size.x / openfl_TextureSize.x;
 					float h = size.y / openfl_TextureSize.y;
 					
-					if (flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x + w, openfl_TextureCoordv.y)).a != 0.
-					|| flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x - w, openfl_TextureCoordv.y)).a != 0.
-					|| flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y + h)).a != 0.
-					|| flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y - h)).a != 0.)
+					if (flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x + w, openfl_TextureCoordv.y)).a != 0.0 // Cambiado a 0.0
+					|| flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x - w, openfl_TextureCoordv.y)).a != 0.0
+					|| flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y + h)).a != 0.0
+					|| flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y - h)).a != 0.0)
 						color = vec4(1.0, 1.0, 1.0, 1.0);
 				}
 			}
